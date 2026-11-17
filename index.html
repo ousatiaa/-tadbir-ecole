@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tadbir Ecole — برنامج تدبير المؤسسات التعليمية</title>
+  <meta name="description" content="تحميل برنامج Tadbir Ecole لتدبير التلاميذ والأساتذة والأقسام وجداول الحصص وأوراق الغياب والشهادات." />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+    :root { --primary: #1f6f54; --primary-dark: #155441; --surface: #ffffff; --bg: #f2f6f4; --text: #1e293b; --muted: #64748b; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* Header */
+    .hero { background: linear-gradient(135deg, #1f6f54 0%, #2a8a6a 60%, #37a37f 100%); color: #fff; padding: 48px 20px 64px; text-align: center; position: relative; overflow: hidden; }
+    .hero::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,.08), transparent 40%), radial-gradient(circle at 80% 80%, rgba(255,255,255,.06), transparent 40%); }
+    .hero-inner { max-width: 860px; margin: 0 auto; position: relative; z-index: 1; }
+    .logo { width: 96px; height: 96px; border-radius: 22px; background: #fff; padding: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.18); margin-bottom: 18px; }
+    h1 { font-size: 34px; margin-bottom: 8px; }
+    .tagline { font-size: 17px; opacity: .92; margin-bottom: 6px; }
+    .version-badge { display: inline-block; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.35); padding: 4px 14px; border-radius: 999px; font-size: 13px; margin-top: 8px; }
+
+    /* Download card */
+    .download-card { max-width: 620px; margin: -40px auto 0; background: var(--surface); border-radius: 16px; padding: 28px; box-shadow: 0 12px 32px rgba(15,60,45,.14); position: relative; z-index: 2; text-align: center; }
+    .btn-download { display: inline-flex; align-items: center; gap: 10px; background: var(--primary); color: #fff; text-decoration: none; font-size: 18px; font-weight: 800; padding: 14px 42px; border-radius: 12px; box-shadow: 0 6px 16px rgba(31,111,84,.35); transition: .15s; }
+    .btn-download:hover { background: var(--primary-dark); transform: translateY(-2px); }
+    .btn-download svg { width: 22px; height: 22px; fill: #fff; }
+    .meta { color: var(--muted); font-size: 13.5px; margin-top: 14px; }
+    .meta b { color: var(--text); }
+    .note-32 { margin-top: 14px; font-size: 13px; color: var(--muted); background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 10px; padding: 10px 14px; }
+
+    /* Features */
+    .features { max-width: 980px; margin: 40px auto 0; padding: 0 20px 20px; }
+    .features h2 { text-align: center; font-size: 24px; color: var(--primary-dark); margin-bottom: 22px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 14px; }
+    .feature { background: var(--surface); border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; display: flex; gap: 12px; align-items: flex-start; }
+    .feature .ico { font-size: 26px; line-height: 1; }
+    .feature h3 { font-size: 15.5px; margin-bottom: 4px; color: var(--primary-dark); }
+    .feature p { font-size: 13.5px; color: var(--muted); }
+
+    /* Requirements */
+    .req { max-width: 980px; margin: 26px auto; padding: 0 20px; }
+    .req-card { background: var(--surface); border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px 22px; }
+    .req-card h3 { font-size: 16px; color: var(--primary-dark); margin-bottom: 10px; }
+    .req-card ul { list-style: none; }
+    .req-card li { font-size: 14px; color: var(--text); padding: 5px 0; }
+    .req-card li::before { content: '✓ '; color: var(--primary); font-weight: 800; }
+
+    /* Steps */
+    .steps { max-width: 980px; margin: 0 auto 40px; padding: 0 20px; }
+    .steps h2 { text-align: center; font-size: 22px; color: var(--primary-dark); margin-bottom: 18px; }
+    .step-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .step { background: var(--surface); border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; text-align: center; }
+    .step .num { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; }
+    .step h4 { font-size: 14.5px; margin-bottom: 4px; }
+    .step p { font-size: 13px; color: var(--muted); }
+
+    footer { text-align: center; padding: 24px 20px; color: var(--muted); font-size: 13px; border-top: 1px solid #e2e8f0; background: var(--surface); }
+    footer a { color: var(--primary); text-decoration: none; font-weight: 700; }
+    .admin-link { font-size: 12px; opacity: .7; }
+    .admin-link a { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <div class="hero-inner">
+      <img src="/icon.png" alt="Tadbir Ecole" class="logo" />
+      <h1>Tadbir Ecole</h1>
+      <p class="tagline">برنامج شامل لتدبير المؤسسات التعليمية</p>
+      <p class="tagline" style="font-size:14px;opacity:.8;">تدبير التلاميذ • الأساتذة • الأقسام • جداول الحصص • الغياب • الشهادات</p>
+      <span class="version-badge">الإصدار 1.0.0</span>
+    </div>
+  </div>
+
+  <div class="download-card">
+    <a class="btn-download" href="https://github.com/ousatiaa/-tadbir-ecole/releases/download/v1.0.0/Tadbir-Ecole-Setup-1.0.0.exe" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M12 3v10.58l-3.29-3.29-1.42 1.42L12 17.42l4.71-4.71-1.42-1.42L12 13.58V3zM5 19h14v2H5z"/></svg>
+      تحميل البرنامج
+    </a>
+    <p class="meta">الحجم: <b>78 MB</b> &nbsp;•&nbsp; يتوافق مع: <b>Windows 7 / 8 / 10 / 11</b> &nbsp;•&nbsp; <b>مجاني</b> أثناء التجربة</p>
+    <p class="note-32">💻 لنسخة 32-bit أو حاسوب بدون اتصال، تواصل معنا.</p>
+  </div>
+
+  <div class="features">
+    <h2>المميزات الرئيسية</h2>
+    <div class="grid">
+      <div class="feature"><div class="ico">👨‍🎓</div><div><h3>تدبير التلاميذ</h3><p>ملفات كاملة، البحث والفلترة، الطباعة والاستيراد من Excel.</p></div></div>
+      <div class="feature"><div class="ico">👨‍🏫</div><div><h3>تدبير الأساتذة</h3><p>الجداول الفردية، المواد، ساعات العمل الأسبوعية.</p></div></div>
+      <div class="feature"><div class="ico">🏫</div><div><h3>الأقسام والمستويات</h3><p>تنظيم الأقسام حسب المستويات مع قوائم التلاميذ.</p></div></div>
+      <div class="feature"><div class="ico">🗓️</div><div><h3>جداول الحصص</h3><p>استيراد جداول FET مع دمج الحصص المتتالية وطباعة رسمية A4.</p></div></div>
+      <div class="feature"><div class="ico">📝</div><div><h3>أوراق الغياب</h3><p>الورقة الأسبوعية التلقائية + الأعياد الوطنية + أوقات العمل.</p></div></div>
+      <div class="feature"><div class="ico">🏅</div><div><h3>الشهادات</h3><p>شهادات جاهزة للطباعة بترويسة المؤسسة الرسمية.</p></div></div>
+      <div class="feature"><div class="ico">📊</div><div><h3>الإحصائيات</h3><p>لوحة تحكم بالمؤشرات: النجاح، الغياب، النسب والمعدلات.</p></div></div>
+      <div class="feature"><div class="ico">🖨️</div><div><h3>الطباعة الرسمية</h3><p>ترويسة رسمية (الشعار، الأكاديمية، المديرية) + توقيع المدير.</p></div></div>
+      <div class="feature"><div class="ico">🌐</div><div><h3>عربي / فرنسي</h3><p>واجهة ثنائية اللغة كاملة مع دعم RTL والطباعة.</p></div></div>
+    </div>
+  </div>
+
+  <div class="features" style="margin-top:20px;">
+    <h2>آخر التحديثات / Nouveautés</h2>
+    <div class="grid">
+      <div class="feature"><div class="ico">🆕</div><div><h3>إصدار 1.0.0</h3><p>الإصدار الأول من Tadbir Ecole مع جميع الميزات.</p></div></div>
+    </div>
+  </div>
+
+  <div class="steps">
+    <h2>طريقة التثبيت</h2>
+    <div class="step-row">
+      <div class="step"><div class="num">1</div><h4>حمّل البرنامج</h4><p>اضغط زر التحميل أعلاه.</p></div>
+      <div class="step"><div class="num">2</div><h4>شغّل المثبّت</h4><p>انقر مرتين على الملف المحمّل واتبع الخطوات.</p></div>
+      <div class="step"><div class="num">3</div><h4>فعّل البرنامج</h4><p>أدخل كود التفعيل الخاص بحاسوبك.</p></div>
+      <div class="step"><div class="num">4</div><h4>ابدأ العمل</h4><p>استمتع بتدبير مؤسستك بسهولة!</p></div>
+    </div>
+  </div>
+
+  <div class="req">
+    <div class="req-card">
+      <h3>متطلبات النظام</h3>
+      <ul>
+        <li>نظام Windows 7 / 8 / 10 / 11 (نسخة 64-bit)</li>
+        <li>مساحة قرص: 300 MB على الأقل</li>
+        <li>ذاكرة RAM: 2 GB أو أكثر</li>
+        <li>اتصال بالإنترنت للتفعيل أول مرة فقط</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 <b>Tadbir Ecole</b> — جميع الحقوق محفوظة</p>
+    <p style="margin-top:6px;">للاستفسار والحصول على كود التفعيل: تواصل معنا</p>
+    <p class="admin-link" style="margin-top:10px;"><a href="/admin.html">•</a></p>
+  </footer>
+</body>
+</html>

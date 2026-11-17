@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة أكواد التفعيل — Tadbir Ecole</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; }
+    body { margin: 0; padding: 24px; background: #f3f6fa; color: #1e293b; }
+    .wrap { max-width: 920px; margin: 0 auto; }
+    .card { background: #fff; border: 1px solid #dce3ec; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,.04); }
+    h1 { margin: 0 0 14px; font-size: 20px; color: #1f6f54; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    input { padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; flex: 1; min-width: 180px; }
+    button { padding: 9px 16px; border: none; border-radius: 8px; background: #1f6f54; color: #fff; font-weight: 700; cursor: pointer; font-size: 14px; }
+    button.danger { background: #dc2626; padding: 5px 10px; font-size: 12px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .stat { background: #fff; border: 1px solid #dce3ec; border-radius: 10px; padding: 16px; text-align: center; }
+    .stat .num { font-size: 28px; font-weight: 800; color: #1f6f54; margin-top: 4px; }
+    .stat .lbl { font-size: 13px; color: #64748b; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 10px 8px; text-align: right; }
+    th { background: #f8fafc; color: #475569; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+    .ok { background: #dcfce7; color: #166534; }
+    .wait { background: #fef3c7; color: #92400e; }
+    code { font-family: monospace; font-size: 13px; background: #f1f5f9; padding: 3px 6px; border-radius: 4px; }
+    #msg { color: #dc2626; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>لوحة إدارة التفعيل — Tadbir Ecole</h1>
+      <div class="row">
+        <input id="tok" type="password" placeholder="أدخل كود الإدارة (ADMIN_TOKEN)" />
+        <button onclick="loadData()">عرض الإحصائيات</button>
+      </div>
+      <div id="msg"></div>
+    </div>
+
+    <div id="dash" style="display:none;">
+      <div class="stats">
+        <div class="stat"><div class="lbl">عدد الأكواد المولدة</div><div class="num" id="st_total">0</div></div>
+        <div class="stat"><div class="lbl">الحواسيب المرتبطة (مفعّلة)</div><div class="num" id="st_used">0</div></div>
+        <div class="stat"><div class="lbl">أكواد غير مستعملة بعد</div><div class="num" id="st_free">0</div></div>
+      </div>
+
+      <div class="card">
+        <h1>توليد كود تفعيل جديد</h1>
+        <div class="row">
+          <input id="c_name" type="text" placeholder="اسم المؤسسة أو العميل" />
+          <input id="c_exp" type="date" value="2027-12-31" />
+          <button onclick="createKey()">+ توليد كود</button>
+        </div>
+        <div id="new_key" style="margin-top:10px;font-weight:700;color:#1f6f54;"></div>
+      </div>
+
+      <div class="card">
+        <h1>قائمة الأكواد</h1>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>الكود</th><th>العميل</th><th>الحالة / الحاسوب</th><th>الصلاحية</th><th>إجراء</th></tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const saved = localStorage.getItem('tadbir_admin_tok');
+    if (saved) { document.getElementById('tok').value = saved; loadData(); }
+
+    async function loadData() {
+      const adminToken = document.getElementById('tok').value.trim();
+      const msg = document.getElementById('msg');
+      msg.textContent = '';
+      if (!adminToken) { msg.textContent = 'المرجو إدخال كود الإدارة'; return; }
+      try {
+        const res = await fetch('/api/admin/list', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adminToken })
+        });
+        const j = await res.json();
+        if (!j.ok) { msg.textContent = 'كود الإدارة غير صحيح'; return; }
+        localStorage.setItem('tadbir_admin_tok', adminToken);
+        const list = j.licenses || [];
+        let linked = 0, usedCodes = 0;
+        list.forEach(r => {
+          const m = Array.isArray(r.machines) ? r.machines.length : 0;
+          linked += m;
+          if (m > 0) usedCodes++;
+        });
+        document.getElementById('st_total').textContent = list.length;
+        document.getElementById('st_used').textContent = linked;
+        document.getElementById('st_free').textContent = list.length - usedCodes;
+        const tbody = document.getElementById('rows');
+        tbody.innerHTML = list.map(r => {
+          const m = Array.isArray(r.machines) ? r.machines : [];
+          const st = m.length
+            ? `<span class="badge ok">مرتبط (${m.length}/${r.max_devices})</span>`
+            : `<span class="badge wait">غير مستعمل</span>`;
+          return `<tr>
+            <td><code>${r.license_key}</code></td>
+            <td>${r.customer || ''}</td>
+            <td>${st}</td>
+            <td>${r.expiry || '-'}</td>
+            <td><button class="danger" onclick="revokeKey('${r.license_key}')">حذف</button></td>
+          </tr>`;
+        }).join('');
+        document.getElementById('dash').style.display = 'block';
+      } catch (e) { msg.textContent = 'خطأ في الاتصال'; }
+    }
+
+    async function createKey() {
+      const adminToken = document.getElementById('tok').value.trim();
+      const customer = document.getElementById('c_name').value.trim() || 'مؤسسة';
+      const expiry = document.getElementById('c_exp').value || '2027-12-31';
+      const res = await fetch('/api/admin/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminToken, customer, maxDevices: 1, expiry })
+      });
+      const j = await res.json();
+      if (j.ok) {
+        document.getElementById('new_key').textContent = 'الكود الجديد: ' + j.licenseKey;
+        loadData();
+      }
+    }
+
+    async function revokeKey(licenseKey) {
+      if (!confirm('حذف هذا الكود؟')) return;
+      const adminToken = document.getElementById('tok').value.trim();
+      await fetch('/api/admin/revoke', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminToken, licenseKey })
+      });
+      loadData();
+    }
+  </script>
+</body>
+</html>

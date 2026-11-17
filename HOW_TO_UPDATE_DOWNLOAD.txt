@@ -1,0 +1,36 @@
+================================================================================
+  كيفاش تربط كود التحميل (Google Drive / GitHub / أي موقع خارجي)
+================================================================================
+
+1) رفع الملف (مثلاً على Google Drive):
+   - افتح https://drive.google.com
+   - اضغط "جديد" -> "رفع ملف" -> اختر dist\Tadbir-Ecole-Setup-1.0.0.exe (أو x64)
+   - بعد رفع، انقر بزر الفأرة الأيمن على الملف -> "الحصول على رابط" -> "أي شخص لديه الرابط"
+   - انسخ "رابط sharing" (مثلا https://drive.google.com/file/d/1AbC.../view?usp=sharing)
+
+2) استخراج "File ID":
+   - من الرابط أعلاه، الـ ID هو الجزء بين /d/ و /view (مثلا 1AbC...)
+
+3) إنشاء رابط تحميل مباشر:
+   https://drive.google.com/uc?export=download&id=FILE_ID
+   (مثلا https://drive.google.com/uc?export=download&id=1AbC...)
+
+   ملاحظة: Google Drive may show a "Download anyway" warning for files > 100MB (our 150MB file will). That's normal - the user clicks "Download anyway".
+
+4) تحديث index.html:
+   - افتح license-api/index.html
+   - ابحث عن: GDRIVE_FILE_ID
+   - استبدل "GDRIVE_FILE_ID" بـ ID فعلي (أو استبدل كل الرابط)
+   - مثال: href="https://drive.google.com/uc?export=download&id=1AbCdefGHIjklMNOpqrSTUvwxYZ"
+
+5) إعادة النشر:
+   cd "C:\Users\OUSAMA\Documents\Default Project\tadbir-ecole\license-api"
+   npx vercel --prod --yes
+
+6) بديل (GitHub Releases): إذا أردت رابطاً مباشراً بدون تحذير "Download anyway":
+   - أنشئ مستودعاً على GitHub (مثلا tadbir-ecole)
+   - أنشئ Release وا رفع المثبت (.exe) كـ asset
+   - استخدم رابط الـ asset (https://github.com/USER/REPO/releases/download/v1.0.0/Tadbir-Ecole-Setup-1.0.0.exe)
+   - استبدل href في index.html
+
+================================================================================
